@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tile Swap Puzzle — Game by Anjali</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3008523105966860" crossorigin="anonymous"></script>
+<style>
+  body { font-family: Arial, sans-serif; background: #071124; color: #fff; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+  .wrap { width: 350px; text-align:center; }
+  h1 { font-size:1.2rem; margin-bottom:10px; }
+  .ad { margin:10px 0; }
+  .grid { display: grid; gap:2px; margin:10px 0; }
+  .tile { width: 80px; height:80px; display:flex; justify-content:center; align-items:center; font-size:1.5rem; background:#60a5fa; color:#062245; cursor:pointer; user-select:none; }
+  .controls { margin-top:10px; }
+  .btn { padding:6px 12px; border-radius:6px; border:none; cursor:pointer; margin:2px; }
+  .level-info { margin:6px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Tile Swap Puzzle — Game by Anjali</h1>
+<div class="ad">
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3008523105966860" data-ad-slot="3563796948" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+<div class="level-info">Level: <span id="level">1</span> / 10</div>
+<div class="grid" id="grid"></div>
+<div class="controls">
+<button class="btn" id="resetBtn">Reset Level</button>
+</div>
+<div class="ad">
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3008523105966860" data-ad-slot="8273198148" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+</div>
+<script>
+const MAX_LEVEL = 10;
+let level = 1;
+let gridSize = 3;
+let tiles = [];
+let emptyTile = {row:0, col:0};
+const gridEl = document.getElementById('grid');
+const levelEl = document.getElementById('level');
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function createGrid() {
+  gridEl.innerHTML = '';
+  gridEl.style.gridTemplateColumns = `repeat(${gridSize}, 80px)`;
+  tiles = [];
+  let numbers = Array.from({length:gridSize*gridSize-1}, (_,i)=>i+1);
+  numbers.push('');
+  numbers = shuffle(numbers);
+
+  numbers.forEach((num,rowIndex)=>{
+    const tile = document.createElement('div');
+    tile.classList.add('tile');
+    tile.textContent = num;
+    tile.addEventListener('click', ()=> moveTile(rowIndex));
+    tiles.push(tile);
+    gridEl.appendChild(tile);
+  });
+}
+
+function moveTile(index){
+  let emptyIndex = tiles.findIndex(t=>t.textContent==='');
+  const canSwap = [emptyIndex-1, emptyIndex+1, emptyIndex-gridSize, emptyIndex+gridSize];
+  if(canSwap.includes(index)){
+    [tiles[index].textContent, tiles[emptyIndex].textContent] = [tiles[emptyIndex].textContent, tiles[index].textContent];
+    checkWin();
+  }
+}
+
+function checkWin(){
+  let won = true;
+  for(let i=0;i<tiles.length-1;i++){
+    if(parseInt(tiles[i].textContent)!==i+1) won=false;
+  }
+  if(won){
+    alert(`Level ${level} completed!`);
+    if(level<MAX_LEVEL){
+      level++; gridSize = Math.min(5, gridSize+1); levelEl.textContent=level; createGrid();
+    } else {
+      alert('Congratulations! All levels completed.');
+    }
+  }
+}
+
+document.getElementById('resetBtn').addEventListener('click', ()=>createGrid());
+createGrid();
+</script>
+</body>
+</html>
